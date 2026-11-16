@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d16">
+  <meta name="description" content="Useful scripts and tools for Torn City and more.">
+  <title>c0pyc4t Scrips | Torn Projects</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080d16;
+      --panel: #111a28;
+      --panel-2: #0d1522;
+      --line: #24344a;
+      --text: #e8f0fb;
+      --muted: #9aabc1;
+      --blue: #19a7ff;
+      --blue-2: #0878d1;
+      --radius: 14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: radial-gradient(ellipse at 50% -15%, #102b49 0, var(--bg) 48rem); color: var(--text); line-height: 1.6; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { color: #75caff; }
+    .wrap { width: min(1120px, calc(100% - 36px)); margin: auto; }
+    header { position: sticky; top: 0; z-index: 5; background: rgb(8 13 22 / 92%); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+    .nav { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { color: var(--text); font-size: 1.25rem; font-weight: 800; letter-spacing: -.04em; }
+    .brand span, .accent { color: var(--blue); }
+    nav { display: flex; flex-wrap: wrap; gap: 20px; }
+    nav a { color: #c6d3e4; font-size: .92rem; }
+    .hero { padding: 76px 0 64px; border-bottom: 1px solid var(--line); background: linear-gradient(110deg, rgb(10 34 59 / 55%), transparent 65%); }
+    .eyebrow { color: var(--blue); text-transform: uppercase; letter-spacing: .16em; font-size: .75rem; font-weight: 800; }
+    h1 { margin: 8px 0 10px; font-size: clamp(2.5rem, 7vw, 4.8rem); line-height: 1.05; letter-spacing: -.06em; }
+    .hero p { max-width: 700px; color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.3rem); margin: 0 0 25px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border-radius: 9px; border: 1px solid var(--line); color: var(--text); background: #172337; font-weight: 650; }
+    .btn.primary { background: var(--blue-2); border-color: var(--blue); color: white; }
+    main { padding: 30px 0 60px; }
+    .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+    .card { grid-column: span 6; min-width: 0; padding: 24px; background: linear-gradient(145deg, var(--panel), var(--panel-2)); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: 0 12px 35px rgb(0 0 0 / 13%); }
+    .card.full { grid-column: 1 / -1; }
+    .card.third { grid-column: span 4; }
+    h2 { margin: 0 0 12px; font-size: 1.25rem; letter-spacing: -.02em; }
+    h2::before { content: "// "; color: var(--blue); font-family: ui-monospace, monospace; }
+    p { margin: 0 0 12px; }
+    .muted { color: var(--muted); }
+    .details { display: grid; grid-template-columns: 130px 1fr; gap: 8px 14px; margin: 16px 0 0; }
+    .details dt { color: var(--muted); }
+    .details dd { margin: 0; overflow-wrap: anywhere; }
+    ol.install { padding-left: 1.35rem; margin: 14px 0 0; }
+    ol.install li { padding: 4px 0 4px 5px; }
+    code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    pre { overflow-x: auto; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: #080e18; color: #c9e8ff; }
+    .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .shots a { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #080e18; }
+    .shots img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; transition: transform .2s ease; }
+    .shots a:hover img { transform: scale(1.035); }
+    .video { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #080e18; }
+    .video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    footer { border-top: 1px solid var(--line); background: #070b12; padding: 24px 0; color: var(--muted); }
+    .foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+    .foot strong { color: var(--text); }
+    @media (max-width: 760px) {
+      .nav { align-items: flex-start; flex-direction: column; padding: 14px 0; }
+      nav { gap: 14px; }
+      .hero { padding: 54px 0 46px; }
+      .card, .card.third { grid-column: 1 / -1; }
+      .shots { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#home">c0pyc4t <span>Scrips</span></a>
+      <nav aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#install">Install</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="wrap">
+      <div class="eyebrow">Torn City scripts &amp; tools</div>
+      <h1>c0pyc4t <span class="accent">Scrips</span></h1>
+      <p>[A short tagline about your scripts, tools, and projects. Explain what visitors can find here.]</p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/YOUR_USERNAME/YOUR_REPOSITORY" target="_blank" rel="noopener">View on GitHub</a>
+        <a class="btn" href="#install">Installation guide</a>
+      </div>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="grid">
+      <section class="card" id="about">
+        <h2>About this project</h2>
+        <p>[Describe what this script does, what problem it solves, and who it is for.]</p>
+        <p class="muted">[Add notes about supported browsers, required extensions, permissions, or limitations.]</p>
+      </section>
+
+      <section class="card" id="contact">
+        <h2>Contact &amp; support</h2>
+        <p>[Questions, suggestions, or found a bug? Get in touch.]</p>
+        <p>Email: <a href="mailto:YOUR_EMAIL@example.com">YOUR_EMAIL@example.com</a></p>
+        <p>GitHub: <a href="https://github.com/YOUR_USERNAME" target="_blank" rel="noopener">github.com/YOUR_USERNAME</a></p>
+        <p class="muted">[Optional: add a Discord, forum thread, or issue tracker link.]</p>
+      </section>
+
+      <section class="card third">
+        <h2>Script information</h2>
+        <dl class="details">
+          <dt>Script</dt><dd>[SCRIPT_NAME]</dd>
+          <dt>Version</dt><dd>[1.0.0]</dd>
+          <dt>Author</dt><dd>c0pyc4t</dd>
+          <dt>Game</dt><dd>Torn City</dd>
+          <dt>Updated</dt><dd>[YYYY-MM-DD]</dd>
+          <dt>License</dt><dd>[MIT / Other]</dd>
+        </dl>
+      </section>
+
+      <section class="card third" id="install">
+        <h2>Installation</h2>
+        <ol class="install">
+          <li>Install a userscript manager, such as <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener">Tampermonkey</a> or <a href="https://scriptcat.org/" target="_blank" rel="noopener">ScriptCat</a>.</li>
+          <li>Open the script install link: <a href="YOUR_RAW_SCRIPT_URL">[SCRIPT_INSTALL_LINK]</a>.</li>
+          <li>Confirm the installation in your userscript manager.</li>
+          <li>Visit Torn and follow any setup instructions below.</li>
+        </ol>
+      </section>
+
+      <section class="card third">
+        <h2>Requirements &amp; notes</h2>
+        <ul>
+          <li>[Supported browser]</li>
+          <li>[Required userscript manager]</li>
+          <li>[API key or permissions, if applicable]</li>
+          <li>[Known limitations / important notes]</li>
+        </ul>
+      </section>
+
+      <section class="card full">
+        <h2>How to use</h2>
+        <p>[Explain the main features and how to use them. Add headings or bullet points for individual features.]</p>
+        <pre><code>[Optional command, configuration example, or settings snippet]</code></pre>
+      </section>
+
+      <section class="card full" id="screenshots">
+        <h2>Screenshots</h2>
+        <p class="muted">[Add screenshots to the repository's <code>pictures/</code> directory and update the filenames below.]</p>
+        <div class="shots">
+          <a href="pictures/screenshot-1.png" target="_blank" rel="noopener"><img src="pictures/screenshot-1.png" alt="Screenshot 1 - [describe what is shown]" loading="lazy"></a>
+          <a href="pictures/screenshot-2.png" target="_blank" rel="noopener"><img src="pictures/screenshot-2.png" alt="Screenshot 2 - [describe what is shown]" loading="lazy"></a>
+          <a href="pictures/screenshot-3.png" target="_blank" rel="noopener"><img src="pictures/screenshot-3.png" alt="Screenshot 3 - [describe what is shown]" loading="lazy"></a>
+        </div>
+      </section>
+
+      <section class="card full">
+        <h2>Video guide</h2>
+        <p class="muted">[Add a short description of the video tutorial or demo.]</p>
+        <div class="video">
+          <!-- Replace YOUR_YOUTUBE_VIDEO_ID with the ID from the YouTube URL. -->
+          <iframe src="https://www.youtube-nocookie.com/embed/YOUR_YOUTUBE_VIDEO_ID" title="[Video title]" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+        <p class="muted">Video not loading? <a href="https://www.youtube.com/watch?v=YOUR_YOUTUBE_VIDEO_ID" target="_blank" rel="noopener">Watch on YouTube</a>.</p>
+      </section>
+
+      <section class="card full">
+        <h2>Changelog</h2>
+        <ul>
+          <li><strong>[1.0.0] — [YYYY-MM-DD]</strong>: [Initial release / describe changes.]</li>
+          <li><strong>[0.9.0] — [YYYY-MM-DD]</strong>: [Previous version changes.]</li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <div><strong>c0pyc4t <span class="accent">Scrips</span></strong><br><small>Independent scripts and tools for Torn City.</small></div>
+      <small>Not affiliated with or endorsed by Torn City. © <span id="year">2026</span> c0pyc4t.</small>
+      <a href="https://github.com/YOUR_USERNAME" target="_blank" rel="noopener">GitHub profile ↗</a>
+    </div>
+  </footer>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
