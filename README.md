@@ -1,6 +1,6 @@
-# CAT Lite
+# CAT Dibs
 
-A lightweight Torn userscript and Node.js service for coordinating faction war targets. CAT Lite lets faction members claim targets, see who has claimed each player, and avoid multiple members calling the same target.
+A lightweight Torn userscript and Node.js service for coordinating faction war targets. CAT Dibs lets faction members claim targets, see who has claimed each player, and avoid multiple members calling the same target.
 
 ## Features
 
@@ -14,7 +14,7 @@ A lightweight Torn userscript and Node.js service for coordinating faction war t
 
 ## How claim release works
 
-CAT Lite does not release a claim just because a target is already in the hospital. It first needs to observe the target outside the hospital after the claim was made. If that target later enters the hospital for a recognized combat reason, the claim can be released automatically.
+CAT Dibs does not release a claim just because a target is already in the hospital. It first needs to observe the target outside the hospital after the claim was made. If that target later enters the hospital for a recognized combat reason, the claim can be released automatically.
 
 Recognized combat descriptions include being **hospitalized by**, **attacked by**, **mugged by**, or **losing to** another player.
 
@@ -26,7 +26,7 @@ The userscript uses these default polling intervals:
 
 | Task | Interval | What it does |
 | --- | ---: | --- |
-| Claim list sync | 3 seconds | Requests the active claims from the CAT Lite server (`GET /api/calls`). |
+| Claim list sync | 3 seconds | Requests the active claims from the CAT Dibs server (`GET /api/calls`). |
 | Page button refresh | 2 seconds | Updates the claim buttons shown in the faction members list. This is local page/UI work, not a Torn API request. |
 | Target/faction status check | 20 seconds | Checks faction member status and evaluates eligible claims for combat-related hospital release. |
 | Ranked-war opponent check | 120 seconds | Checks the Torn API for your current ranked-war opponent. |
@@ -40,7 +40,7 @@ The script uses Torn API v2:
 
 At the default 20-second status interval, the status monitor makes up to **2 faction-member requests per cycle** when an opponent is detected (approximately **6 requests per minute**), or **1 per cycle** when no opponent is detected (approximately **3 requests per minute**). The ranked-war endpoint is checked at most once every 2 minutes (approximately **0.5 request per minute**), excluding the initial forced check and retries/failures.
 
-The claim-list requests go to your CAT Lite server, **not** to Torn's API. Actual Torn API usage can vary with open Torn tabs, other scripts using the same API key, and failed/retried requests. Avoid running multiple CAT Lite tabs unnecessarily.
+The claim-list requests go to your CAT Dibs server, **not** to Torn's API. Actual Torn API usage can vary with open Torn tabs, other scripts using the same API key, and failed/retried requests. Avoid running multiple CAT Dibs tabs unnecessarily.
 
 Torn currently documents a limit of **100 requests per minute per user across all of their API keys**. Torn also documents a service IP limit of **5,000 requests per minute**. Limits may change, so check the [official Torn API documentation](https://www.torn.com/api.html).
 
@@ -50,7 +50,7 @@ Torn currently documents a limit of **100 requests per minute per user across al
 - A Torn API key with access to the faction information required by the script
 - Your faction ID
 - A userscript manager that supports the `GM_*` functions used by the script (for example, Tampermonkey or ScriptCat)
-- The CAT Lite userscript (`dibs.js`)
+- The CAT Dibs userscript (`dibs.js`)
 
 ## Installation and startup
 
@@ -71,7 +71,7 @@ FACTION_ID=CHANGE_ME
 API_TOKEN=CHANGE_ME
 ```
 
-Set `FACTION_ID` to your faction ID and `API_TOKEN` to the Torn API token used by the CAT Lite service. Keep this file private and do not commit real API tokens to GitHub.
+Set `FACTION_ID` to your faction ID and `API_TOKEN` to the Torn API token used by the CAT Dibs service. Keep this file private and do not commit real API tokens to GitHub.
 
 ### 3. Initialize the database
 
@@ -101,7 +101,7 @@ Open `dibs.js` and edit the `@namespace` line near the top:
 // @namespace    https://YOUR_URL_HERE.COM/
 ```
 
-Replace the placeholder with the IP address or domain name that users will use to reach your CAT Lite server. The server address configured in the script must also be reachable by users' browsers.
+Replace the placeholder with the IP address or domain name that users will use to reach your CAT Dibs server. The server address configured in the script must also be reachable by users' browsers.
 
 > **Configuration note:** In the supplied `dibs.js`, the actual server URL is set by the `SERVER` constant near the top of the file. If you are changing the server host, update that constant as well as the `@namespace` metadata line:
 >
@@ -146,7 +146,7 @@ docker compose down
 
 ## Database reset
 
-**Warning:** This removes the existing CAT Lite database data. Use it only if you intend to wipe and rebuild the database.
+**Warning:** This removes the existing CAT Dibs database data. Use it only if you intend to wipe and rebuild the database.
 
 ```bash
 npm run db:reset
@@ -168,11 +168,11 @@ After resetting, initialize or start the service as required by your project set
 
 ## Notes
 
-- The CAT Lite server must remain online for claim synchronization between faction members.
+- The CAT Dibs server must remain online for claim synchronization between faction members.
 - Each user should register their own Torn API key through the userscript menu.
 - Do not publish your `.env` file or share API keys.
 - The userscript runs its faction-page features on Torn pages matching `https://www.torn.com/*`, and initializes the claim interface on the faction page.
 
 ---
 
-**CAT Lite** — faction war target calling, made simple.
+**CAT Dibs** — faction war target calling, made simple.
