@@ -1,0 +1,16 @@
+services:
+  cat-server:
+    build: .
+    container_name: cat-lite-server
+    restart: unless-stopped
+    ports:
+      - "3701:3701"
+    environment:
+      - PORT=3701
+      - DB_DIR=/app/data
+      - DB_FILE=cat.db
+      # - API_TOKEN=your_optional_shared_token_here
+      # - FACTION_ID=your_optional_default_faction_here
+    volumes:
+      # Map the local data folder to the container so DB isn't lost on rebuild
+      - ./data:/app/data

@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080d16">
-  <meta name="description" content="Useful scripts and tools for Torn City and more.">
-  <title>c0pyc4t Scrips | Torn Projects</title>
+  <meta name="description" content="CAT Lite — a faction war target-calling tool for Torn City. Claim targets, coordinate attacks, and track combat hospitalizations.">
+  <title>CAT Dibs | c0pyc4t Scrips</title>
   <style>
     :root {
       color-scheme: dark;
@@ -91,7 +91,7 @@
     <div class="wrap">
       <div class="eyebrow">Torn City scripts &amp; tools</div>
       <h1>c0pyc4t <span class="accent">Scrips</span></h1>
-      <p>[A short tagline about your scripts, tools, and projects. Explain what visitors can find here.]</p>
+      <p>Coordinate faction war targets without the guesswork. CAT Dibs lets members claim targets, see who is calling each player, and keep your faction's attacks organised.</p>
       <div class="actions">
         <a class="btn primary" href="https://github.com/YOUR_USERNAME/YOUR_REPOSITORY" target="_blank" rel="noopener">View on GitHub</a>
         <a class="btn" href="#install">Installation guide</a>
@@ -103,27 +103,26 @@
     <div class="grid">
       <section class="card" id="about">
         <h2>About this project</h2>
-        <p>[Describe what this script does, what problem it solves, and who it is for.]</p>
-        <p class="muted">[Add notes about supported browsers, required extensions, permissions, or limitations.]</p>
+        <p><strong>CAT Dibs</strong> is a Torn City userscript paired with a small Node.js service. It adds claim buttons to the faction members list so faction members can coordinate who is attacking whom during ranked wars.</p>
+        <p class="muted">Requires a running node js server, a Torn API key with faction access, and a userscript manager such as Tampermonkey or ScriptCat. The server must be reachable by every member using the script.</p>
       </section>
 
       <section class="card" id="contact">
         <h2>Contact &amp; support</h2>
-        <p>[Questions, suggestions, or found a bug? Get in touch.]</p>
-        <p>Email: <a href="mailto:YOUR_EMAIL@example.com">YOUR_EMAIL@example.com</a></p>
-        <p>GitHub: <a href="https://github.com/YOUR_USERNAME" target="_blank" rel="noopener">github.com/YOUR_USERNAME</a></p>
-        <p class="muted">[Optional: add a Discord, forum thread, or issue tracker link.]</p>
-      </section>
+        <p>Questions, suggestions, or found a bug? Contact the project author or open an issue on GitHub.</p>
+        <p>Email: <a href="mailto:YOUR_EMAIL@example.com">copycat1337x@protonmail.com</a></p>
+        <p>GitHub: <a href="https://github.com/copycat1337" target="_blank" rel="noopener">github.com/YOUR_USERNAME</a></p>
+        
 
       <section class="card third">
         <h2>Script information</h2>
         <dl class="details">
-          <dt>Script</dt><dd>[SCRIPT_NAME]</dd>
-          <dt>Version</dt><dd>[1.0.0]</dd>
-          <dt>Author</dt><dd>c0pyc4t</dd>
+          <dt>Script</dt><dd>CAT Dibs</dd>
+          <dt>Version</dt><dd>3.3.1</dd>
+          <dt>Author</dt><dd>c0pyc4t [4039125] & Gezkeni [4501153]</dd>
           <dt>Game</dt><dd>Torn City</dd>
-          <dt>Updated</dt><dd>[YYYY-MM-DD]</dd>
-          <dt>License</dt><dd>[MIT / Other]</dd>
+          <dt>Updated</dt><dd>2026-11-16</dd>
+          <dt>Server</dt><dd>Node.js · Port 3701</dd>
         </dl>
       </section>
 
@@ -131,31 +130,53 @@
         <h2>Installation</h2>
         <ol class="install">
           <li>Install a userscript manager, such as <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener">Tampermonkey</a> or <a href="https://scriptcat.org/" target="_blank" rel="noopener">ScriptCat</a>.</li>
-          <li>Open the script install link: <a href="YOUR_RAW_SCRIPT_URL">[SCRIPT_INSTALL_LINK]</a>.</li>
+          <li>Install the CAT Dibs userscript (<code>dibs.js</code>) from this repository or your published raw script link.</li>
           <li>Confirm the installation in your userscript manager.</li>
-          <li>Visit Torn and follow any setup instructions below.</li>
+          <li>Open your faction page on Torn and use the userscript menu to select <strong>Set Torn API Key</strong>. Complete registration, then reload the page.</li>
         </ol>
       </section>
 
       <section class="card third">
         <h2>Requirements &amp; notes</h2>
         <ul>
-          <li>[Supported browser]</li>
-          <li>[Required userscript manager]</li>
-          <li>[API key or permissions, if applicable]</li>
-          <li>[Known limitations / important notes]</li>
+          <li>A browser supported by your userscript manager (Tampermonkey or ScriptCat).</li>
+          <li>CAT Lite Node.js server running and reachable on port <code>3701</code>.</li>
+          <li>Your Torn API key and faction ID configured for the server.</li>
+          <li>Claims synchronize through the CAT Lite server; the server must stay online.</li>
         </ul>
       </section>
 
       <section class="card full">
         <h2>How to use</h2>
-        <p>[Explain the main features and how to use them. Add headings or bullet points for individual features.]</p>
-        <pre><code>[Optional command, configuration example, or settings snippet]</code></pre>
+        <p>Use the <strong>CALL</strong> button beside a faction member to claim that player as your target. The button then shows the name of the member who has claimed the target.</p>
+        <ul>
+          <li><strong>One claim per target:</strong> once a player is claimed, another faction member cannot claim that same target.</li>
+          <li><strong>Claim ownership:</strong> you can manually cancel your own claim; other members can see who owns it.</li>
+          <li><strong>Hospital tracking:</strong> the script marks targets that are in the hospital and checks whether a claim can be released.</li>
+          <li><strong>Combat-only auto-release:</strong> a claim is released after the script has observed the target outside hospital and later detects a recognized combat hospitalization. Existing hospital stays, self-hospitalization, overdoses, accidents, and unknown reasons do not automatically clear a claim.</li>
+          <li><strong>Ipecac:</strong> taking Ipecac does not reset or release the claimed target.</li>
+          <li><strong>Ranked-war detection:</strong> CAT Lite checks your faction's current ranked-war opponent and monitors both faction rosters.</li>
+        </ul>
+        <p class="muted">Default polling: claims sync every 3 seconds, the page buttons refresh every 2 seconds, target status is checked every 20 seconds, and the ranked-war opponent is checked every 120 seconds.</p>
+        <h3>Server setup</h3>
+        <p>In the server project directory, install dependencies, configure the environment, initialize the database, and start the service:</p>
+        <pre><code>npm install
+# Configure .env:
+# FACTION_ID=YOUR_FACTION_ID
+# API_TOKEN=YOUR_TORN_API_TOKEN
+
+npm run db:init
+node server.js
+
+# Or use Docker Compose:
+docker compose up -d</code></pre>
+        <p>Set <code>FACTION_ID</code> and <code>API_TOKEN</code> in the server's <code>.env</code> file. The default server port is <code>3701</code>. In <code>dibs.js</code>, update both the <code>SERVER</code> constant and the <code>@namespace</code> metadata to your server's public IP or domain.</p>
+        <p>To reset the database (this wipes existing claim data), run <code>npm run db:reset</code>.</p>
       </section>
 
       <section class="card full" id="screenshots">
         <h2>Screenshots</h2>
-        <p class="muted">[Add screenshots to the repository's <code>pictures/</code> directory and update the filenames below.]</p>
+        <p class="muted">Add your CAT Lite screenshots to the repository's <code>pictures/</code> directory and update the image filenames below.</p>
         <div class="shots">
           <a href="pictures/screenshot-1.png" target="_blank" rel="noopener"><img src="pictures/screenshot-1.png" alt="Screenshot 1 - [describe what is shown]" loading="lazy"></a>
           <a href="pictures/screenshot-2.png" target="_blank" rel="noopener"><img src="pictures/screenshot-2.png" alt="Screenshot 2 - [describe what is shown]" loading="lazy"></a>
@@ -165,7 +186,7 @@
 
       <section class="card full">
         <h2>Video guide</h2>
-        <p class="muted">[Add a short description of the video tutorial or demo.]</p>
+        <p class="muted">Watch CAT Lite in action: see how faction members claim targets, view claim ownership, and coordinate war attacks.</p>
         <div class="video">
           <!-- Replace YOUR_YOUTUBE_VIDEO_ID with the ID from the YouTube URL. -->
           <iframe src="https://www.youtube-nocookie.com/embed/YOUR_YOUTUBE_VIDEO_ID" title="[Video title]" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -187,7 +208,7 @@
     <div class="wrap foot">
       <div><strong>c0pyc4t <span class="accent">Scrips</span></strong><br><small>Independent scripts and tools for Torn City.</small></div>
       <small>Not affiliated with or endorsed by Torn City. © <span id="year">2026</span> c0pyc4t.</small>
-      <a href="https://github.com/YOUR_USERNAME" target="_blank" rel="noopener">GitHub profile ↗</a>
+      <a href="https://github.com/copycat1337" target="_blank" rel="noopener">GitHub profile ↗</a>
     </div>
   </footer>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
