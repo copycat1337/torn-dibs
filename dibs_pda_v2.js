@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         CAT Lite (PDA)
+// @name         CAT Dibs (PDA)
 // @namespace    https://c0pyc4t.com/
 // @version      3.3.3-pda
 // @description  War-aware faction calling; release only after confirmed combat hospitalizations. Torn PDA edition: API key supplied via PDA's ###PDA-APIKEY### placeholder. No floating button, no menus.

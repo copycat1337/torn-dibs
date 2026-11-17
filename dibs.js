@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         CAT Lite
+// @name         CAT Dibs
 // @namespace    https://c0pyc4t.com
 // @version      3.3.1
 // @description  War-aware faction calling; release only after confirmed combat hospitalizations.
