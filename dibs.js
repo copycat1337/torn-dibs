@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         CAT Lite
-// @namespace    https://dibs.ghostprotocol.cyou/
+// @namespace    https://c0pyc4t.com
 // @version      3.3.1
 // @description  War-aware faction calling; release only after confirmed combat hospitalizations.
 // @author       c0pyc4t [4039125] & Gezkeni [4501153]
@@ -17,7 +17,7 @@
 (function () {
   "use strict";
 
-  const SERVER = "https://dibs.ghostprotocol.cyou";
+  const SERVER = "https://c0pyc4t.com";
   const POLL_CALLS_MS = 3000;
   const POLL_STATUS_MS = 20000;
   const POLL_WAR_MS = 120000; // Refresh current ranked-war opponent every 2 minutes
