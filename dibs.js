@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         CAT Dibs
-// @namespace    https://c0pyc4t.com
-// @version      3.3.1
-// @description  War-aware faction calling; release only after confirmed combat hospitalizations.
-// @author       c0pyc4t [4039125] & Gezkeni [4501153]
+// @name         CAT Dibs (Torn PDA)
+// @namespace    https://dibs.ghostprotocol.cyou/
+// @version      3.4.0-pda
+// @description  War-aware faction calling; release only after confirmed combat hospitalizations. Torn PDA friendly with on-screen API key entry.
+// @author       c0pyc4t [4039125] & Gezkeni [4501153] (PDA port)
 // @match        https://www.torn.com/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setValue
@@ -17,13 +17,13 @@
 (function () {
   "use strict";
 
-  const SERVER = "https://c0pyc4t.com";
+  const SERVER = "https://dibs.ghostprotocol.cyou";
   const POLL_CALLS_MS = 3000;
   const POLL_STATUS_MS = 20000;
-  const POLL_WAR_MS = 120000; // Refresh current ranked-war opponent every 2 minutes
+  const POLL_WAR_MS = 120000;
   const DEBUG = true;
 
-  const log = (...args) => { if (DEBUG) console.log("[CAT Lite]", ...args); };
+  const log = (...args) => { if (DEBUG) console.log("[CAT Dibs PDA]", ...args); };
   const getKey = () => GM_getValue("catlite_key", "");
   const getToken = () => GM_getValue("catlite_token", "");
   const getFaction = () => GM_getValue("catlite_faction", "");
@@ -60,8 +60,8 @@
           catch { log("Invalid server JSON:", path); }
           resolve({ status: r.status, data });
         },
-        onerror: e => { console.error("[CAT Lite] Server network error:", path, e); resolve({ status: 0, data: { error: "network_error" } }); },
-        ontimeout: () => { console.warn("[CAT Lite] Server request timed out:", path); resolve({ status: 0, data: { error: "timeout" } }); }
+        onerror: e => { console.error("[CAT Lite PDA] Server network error:", path, e); resolve({ status: 0, data: { error: "network_error" } }); },
+        ontimeout: () => { console.warn("[CAT Lite PDA] Server request timed out:", path); resolve({ status: 0, data: { error: "timeout" } }); }
       });
     });
   }
@@ -73,26 +73,142 @@
     return data;
   }
 
-  GM_registerMenuCommand("1. Set Torn API Key", () => {
-    const key = prompt("Enter your Torn Public API Key:", getKey());
-    if (!key || !key.trim()) return;
-    register(key.trim())
-      .then(() => { alert(`Success! Logged in as ${getPlayer()}. Reloading page...`); window.location.reload(); })
-      .catch(e => alert("Registration Error: " + e.message));
-  });
+  // ---- On-page API key entry (Torn PDA friendly) ----
+  let overlayEl = null;
 
+  function removeOverlay() {
+    if (overlayEl && overlayEl.parentNode) overlayEl.parentNode.removeChild(overlayEl);
+    overlayEl = null;
+  }
+
+  function showKeyOverlay() {
+    if (overlayEl) return;
+    overlayEl = document.createElement("div");
+    overlayEl.id = "catlite-overlay";
+    overlayEl.style.cssText = `
+      position:fixed;inset:0;z-index:2147483647;
+      background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;
+      font-family:Arial,sans-serif;
+    `;
+
+    const box = document.createElement("div");
+    box.style.cssText = `
+      background:#1c1c1c;border:1px solid #444;border-radius:10px;
+      padding:18px;width:min(90vw,360px);color:#eee;box-shadow:0 8px 30px #000;
+    `;
+
+    const title = document.createElement("div");
+    title.textContent = "CAT Dibs — Enter Torn API Key";
+    title.style.cssText = "font-weight:700;font-size:15px;margin-bottom:10px;";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Paste Public API Key";
+    input.value = getKey();
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    input.style.cssText = `
+      width:100%;box-sizing:border-box;padding:10px;border-radius:6px;
+      border:1px solid #555;background:#111;color:#eee;font-size:14px;
+    `;
+
+    const statusLine = document.createElement("div");
+    statusLine.style.cssText = "margin-top:8px;font-size:12px;color:#f0ad4e;min-height:16px;";
+
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;gap:8px;margin-top:12px;";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.type = "button";
+    saveBtn.textContent = "Save & Login";
+    saveBtn.style.cssText = `
+      flex:1;padding:10px;border-radius:6px;border:1px solid #2a2a2a;cursor:pointer;
+      font-weight:700;color:#fff;background:linear-gradient(180deg,#4a7a00,#2e4d00);
+    `;
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.type = "button";
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.style.cssText = `
+      flex:1;padding:10px;border-radius:6px;border:1px solid #2a2a2a;cursor:pointer;
+      font-weight:700;color:#eee;background:linear-gradient(180deg,#333,#1a1a1a);
+    `;
+
+    saveBtn.onclick = async () => {
+      const key = input.value.trim();
+      if (!key) { statusLine.textContent = "Please enter a key."; return; }
+      saveBtn.disabled = true; cancelBtn.disabled = true;
+      statusLine.style.color = "#f0ad4e";
+      statusLine.textContent = "Registering...";
+      try {
+        await register(key);
+        statusLine.style.color = "#7CFC00";
+        statusLine.textContent = `Success! Logged in as ${getPlayer()}. Reloading...`;
+        setTimeout(() => { removeOverlay(); window.location.reload(); }, 900);
+      } catch (e) {
+        saveBtn.disabled = false; cancelBtn.disabled = false;
+        statusLine.style.color = "#ff5555";
+        statusLine.textContent = "Error: " + e.message;
+      }
+    };
+
+    cancelBtn.onclick = () => removeOverlay();
+
+    input.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") saveBtn.click();
+    });
+
+    row.appendChild(saveBtn);
+    row.appendChild(cancelBtn);
+    box.appendChild(title);
+    box.appendChild(input);
+    box.appendChild(statusLine);
+    box.appendChild(row);
+    overlayEl.appendChild(box);
+    document.body.appendChild(overlayEl);
+    setTimeout(() => input.focus(), 50);
+  }
+
+  // Floating launcher button — only shown when not logged in.
+  let launcherEl = null;
+  function updateLauncher() {
+    const loggedIn = !!getToken();
+    if (loggedIn) {
+      if (launcherEl && launcherEl.parentNode) launcherEl.parentNode.removeChild(launcherEl);
+      launcherEl = null;
+      removeOverlay();
+      return;
+    }
+    if (launcherEl) return;
+    launcherEl = document.createElement("button");
+    launcherEl.id = "catlite-launcher";
+    launcherEl.type = "button";
+    launcherEl.textContent = "CAT";
+    launcherEl.title = "Set Torn API Key for CAT Lite";
+    launcherEl.style.cssText = `
+      position:fixed;right:14px;bottom:80px;z-index:2147483646;
+      width:52px;height:52px;border-radius:50%;
+      border:1px solid #2a2a2a;cursor:pointer;
+      font:700 13px Arial,sans-serif;color:#fff;
+      background:linear-gradient(180deg,#4a7a00,#2e4d00);
+      box-shadow:0 4px 14px #000;text-shadow:0 1px 0 #000;
+    `;
+    launcherEl.onclick = showKeyOverlay;
+    document.body.appendChild(launcherEl);
+  }
+
+  // Keep menu commands too (works in PDA menus where available).
+  GM_registerMenuCommand("1. Set Torn API Key", showKeyOverlay);
   GM_registerMenuCommand("2. Disconnect / Wipe Account", () => {
     if (confirm("Are you sure you want to clear your CAT login?")) wipeStorage();
   });
-
   GM_registerMenuCommand("3. Check Login Status", () => {
     alert(`CAT Status:\nPlayer: ${getPlayer()}\nID: ${getPlayerId()}\nMy faction: ${getFaction()}\nWar opponent: ${opponentFactionName || "None detected"}${opponentFactionId ? " (" + opponentFactionId + ")" : ""}\nToken: ${getToken() ? "Active" : "Missing"}`);
   });
 
+  // ---- Core logic (unchanged behavior) ----
   let calls = new Map();
   let statusCache = {};
-  // Call IDs for which we have observed the target outside hospital while called.
-  // Prevents a pre-existing hospital stay from automatically clearing a new CALL.
   const eligibleCalls = new Set();
   let checkingStatuses = false;
   let refreshingCalls = false;
@@ -156,8 +272,6 @@
                 callerName: getPlayer(),
                 isMine: true
               });
-              // If the last status poll already saw the target outside hospital,
-              // this newly placed call has a known pre-hospital baseline.
               const snapshot = statusCache[memberId];
               if (snapshot && snapshot.state.toLowerCase() !== "hospital") {
                 eligibleCalls.add(String(res.data.data.id));
@@ -185,7 +299,7 @@
               if (res.status === 200 && res.data?.success) {
                 calls.delete(memberId);
               } else {
-                console.warn("[CAT Lite] Manual cancel rejected:", res);
+                console.warn("[CAT Lite PDA] Manual cancel rejected:", res);
                 alert("Cancel failed: " + (res.data?.error || "Unknown"));
               }
             } finally {
@@ -218,7 +332,6 @@
         });
       }
       calls = next;
-      // Clean up baselines for calls which have since ended.
       const activeIds = new Set([...next.values()].map(c => String(c.id)));
       for (const id of eligibleCalls) if (!activeIds.has(id)) eligibleCalls.delete(id);
       paintAll();
@@ -248,8 +361,6 @@
     });
   }
 
-  // Torn's /faction/wars response includes the current ranked war's two factions.
-  // No opponent is assumed when Torn reports no live/current war.
   async function detectWarOpponent(force = false) {
     const key = getKey();
     const ownId = String(getFaction());
@@ -270,8 +381,7 @@
         ? `Ranked-war opponent: ${opponentFactionName} (${opponentFactionId})`
         : "No current ranked-war opponent detected; monitoring own faction for testing.");
     } catch (e) {
-      // Retain the last confirmed opponent if the API temporarily fails.
-      console.warn("[CAT Lite] Opponent detection failed:", e);
+      console.warn("[CAT Lite PDA] Opponent detection failed:", e);
     } finally {
       detectingWar = false;
     }
@@ -297,9 +407,6 @@
   function isCombatHospitalization(status) {
     if (!status || status.state.toLowerCase() !== "hospital") return false;
     const reason = status.details.toLowerCase();
-    // Self-hospitalization, overdose, accidents, and unknown reasons stay claimed.
-    // Torn uses descriptions such as "Hospitalized by ...", "Attacked by ...",
-    // "Mugged by ...", and "Lost to ..." for player combat.
     return /\b(hospitalized by|attacked by|mugged by|lost to)\b/i.test(reason);
   }
 
@@ -312,7 +419,6 @@
     checkingStatuses = true;
     try {
       await detectWarOpponent();
-      // Monitor both sides: enables friendly testing and enemy calls during war.
       const ids = [...new Set([ownId, opponentFactionId].filter(Boolean))];
       const responses = await Promise.allSettled(
         ids.map(id => tornGet(`/faction/${encodeURIComponent(id)}/members`, key))
@@ -324,17 +430,17 @@
           Object.assign(nextCache, parseMemberStatuses(result.value.members));
           successCount++;
         } else {
-          console.warn("[CAT Lite] Could not load member statuses for faction", ids[index],
+          console.warn("[CAT Lite PDA] Could not load member statuses for faction", ids[index],
             result.status === "rejected" ? result.reason : "missing members");
         }
       });
-      if (!successCount) return; // Never cancel based on a failed status lookup.
+      if (!successCount) return;
       statusCache = nextCache;
       log("Monitored factions:", ids, "players loaded:", Object.keys(statusCache).length);
 
       const res = await http("GET", "/api/calls", null, token);
       if (res.status !== 200 || !res.data?.success) {
-        console.warn("[CAT Lite] Unable to retrieve calls for hospital check:", res);
+        console.warn("[CAT Lite PDA] Unable to retrieve calls for hospital check:", res);
         return;
       }
 
@@ -372,7 +478,7 @@
             eligibleCalls.delete(callId);
             log("Combat auto-release succeeded:", targetId);
           } else {
-            console.warn("[CAT Lite] Auto-release rejected by server:", { targetId, result });
+            console.warn("[CAT Lite PDA] Auto-release rejected by server:", { targetId, result });
           }
         } finally {
           cancelInProgress.delete(callId);
@@ -380,13 +486,18 @@
       }
       if (changed) await refreshCalls();
     } catch (e) {
-      console.error("[CAT Lite] Hospital check failed:", e);
+      console.error("[CAT Lite PDA] Hospital check failed:", e);
     } finally {
       checkingStatuses = false;
     }
   }
 
   function boot() {
+    // Always show the launcher if not logged in, regardless of page.
+    updateLauncher();
+    // Re-check launcher state periodically in case login/wipe occurs without reload.
+    setInterval(updateLauncher, 5000);
+
     if (!location.pathname.includes("factions.php") || !getToken()) return;
     refreshCalls();
     setInterval(refreshCalls, POLL_CALLS_MS);
